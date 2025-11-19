@@ -312,7 +312,7 @@ class MetadataDialog(Toplevel):
 class SpectralApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Spectral Data Viewer & Converter")
+        self.root.title("Spectral Data Converter by aron7awol")
         self.root.geometry("800x600")
 
         self.spectral_data: SpectralData = None
@@ -384,7 +384,11 @@ class SpectralApp:
                     self.spectral_data = SpectralData.from_edr(f)
             
             elif filepath.lower().endswith('.csv'):
-                loaded_sets = np.loadtxt(filepath, delimiter=',')
+                # 1. Read file content manually to handle BOM (utf-8-sig)
+                with open(filepath, 'r', encoding='utf-8-sig') as f:
+                    # Load data from the file object directly
+                    loaded_sets = np.loadtxt(f, delimiter=',')
+                
                 if loaded_sets.ndim == 1:
                     loaded_sets = loaded_sets.reshape(1, -1)
                 num_sets, num_bands = loaded_sets.shape
